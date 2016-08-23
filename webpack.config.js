@@ -22,7 +22,7 @@ module.exports = {
         ],
         exclude: /node_modules/,
       },
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'},
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel?presets[]=stage-0,presets[]=react,presets[]=es2015'},
       {
         test: /\.scss$/,
         loader: 'style-loader!css-loader!sass-loader'
