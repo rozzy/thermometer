@@ -1,6 +1,7 @@
 'use strict';
 
 import { Dispatcher } from 'flux';
+import WeatherAPI from './weatherAPI';
 
 class DispatcherClass extends Dispatcher {
   handleViewAction(action) {
@@ -8,14 +9,30 @@ class DispatcherClass extends Dispatcher {
       source: 'VIEW_ACTION', action
     });
   }
+
+  handleServerAction() {
+    this.dispatch({
+      source: 'SERVER_ACTION', action
+    });
+  }
 }
 
 const AppDispatcher = new DispatcherClass();
 
 const Actions = {
-  increase(index) {
-    AppDispatcher.handleViewAction({
-      type: 'INCREASE', index
+  fetchData() {
+    this.weatherAPI = new WeatherAPI(this);
+  },
+
+  forecastFetched(response) {
+    AppDispatcher.handleServerAction({
+      actionType: 'FORECAST_FETCHED', response
+    })
+  },
+
+  fetchError() {
+    AppDispatcher.handleServerAction({
+      actionType: 'CITY_ERROR'
     });
   }
 }

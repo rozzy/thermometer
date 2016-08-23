@@ -33,7 +33,8 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.ProvidePlugin({
       'React': 'react',
-      'ReactDOM': 'react-dom'
+      'ReactDOM': 'react-dom',
+      'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
     }),
     new webpack.NoErrorsPlugin()
   ],

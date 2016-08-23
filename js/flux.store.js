@@ -5,19 +5,23 @@ import { EventEmitter } from 'events';
 
 const CHANGE_EVENT = 'change';
 
-var count = 0;
 class Store extends EventEmitter {
   constructor() {
     super();
-    this.dispatcherIndex = Dispatcher.register(function({ action }) {
-      switch(action.type) {
+    this.registerStore();
+  }
+
+  registerStore() {
+    return Dispatcher.register(function({ action }) {
+      console.log(action);
+      switch(action.actionType) {
         case 'INCREASE':
-          count += 1 ;
+          // count += 1 ;
       }
 
       AppStore.emitChange();
       return true;
-    })
+    });
   }
 
   emitChange() {
@@ -30,10 +34,6 @@ class Store extends EventEmitter {
 
   removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback);
-  }
-
-  getCount() {
-    return count;
   }
 };
 

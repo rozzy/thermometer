@@ -8,15 +8,21 @@ const App = React.createClass({
 
   getInitialState() {
     return {
-      count: AppStore.getCount()
+      loading: true
     };
   },
 
   componentWillMount() {
     AppStore.addChangeListener(this._onChange);
+    Actions.fetchData();
+  },
+
+  componentWillUnmount() {
+    AppStore.removeChangeListener(this._onChange);
   },
 
   _onChange() {
+    console.log('changed');
     this.setState(this.getInitialState());
   },
 
