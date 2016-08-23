@@ -10,7 +10,7 @@ class DispatcherClass extends Dispatcher {
     });
   }
 
-  handleServerAction() {
+  handleServerAction(action) {
     this.dispatch({
       source: 'SERVER_ACTION', action
     });

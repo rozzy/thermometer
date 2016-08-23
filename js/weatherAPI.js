@@ -19,28 +19,29 @@ class WeatherAPI {
   fetchForecast(location) {
     if (typeof location === 'object' && location.coords) {
       location = location.coords;
+      console.log(this.parseResponse);
       fetch(`${CONFIG.url}&lat=${location.latitude}&lon=${location.longitude}`)
-        .then(this.parseResponse)
+        .then(this.parseResponse.bind(this))
         .catch(error => console.error(error));
     } else if (typeof location === 'object') {
       return this.askForPermissionAndGetCoords();
     } else if (typeof location === 'string') {
       fetch(`${CONFIG.url}&q=${location}`)
-        .then(this.parseResponse)
+        .then(this.parseResponse.bind(this))
         .catch(error => console.error(error));
-    }
-
-    if (location !== 'undefined') {
-      localStorage.setItem('location', location);
     }
   }
 
   parseResponse(response) {
-    if (response.cod === "404") {
+    if (response.status === 200) {
+      response.json().then(data => {
+        console.log(data);
+        localStorage.setItem('location', data.name);
+        this.store.forecastFetched(data);
+      });
+    } else {
       localStorage.removeItem('location');
       this.store.fetchError();
-    } else if (response.cod === "200"){
-      this.store.forecastFetched(response);
     }
   }
 
