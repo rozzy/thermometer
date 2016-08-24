@@ -6,7 +6,15 @@ import { EventEmitter } from 'events';
 const CHANGE_EVENT = 'change';
 
 const Weather = {
-  forecast: null
+  forecast: null,
+  loading: false,
+  error: false,
+  value: ''
+}
+
+function toggleBodyClass(condition) {
+  document.body.className = "";
+  document.body.classList.add(condition.toLowerCase());
 }
 
 class Store extends EventEmitter {
@@ -17,13 +25,17 @@ class Store extends EventEmitter {
 
   registerStore() {
     return Dispatcher.register(function({ action }) {
-      console.log('•', action);
       switch(action.actionType) {
         case 'FORECAST_FETCHED':
+          toggleBodyClass(action.condition);
+
           Weather.forecast = action.response
-          Weather.value = action.response.name;
+          if (action.response.name !== "") {
+            Weather.value = action.response.name;
+          }
           Weather.error = false;
           Weather.loading = false;
+
           break;
 
         case 'CITY_ERROR':
@@ -59,4 +71,4 @@ class Store extends EventEmitter {
 
 const AppStore = new Store();
 
-export default AppStore;
+export { AppStore, Weather };

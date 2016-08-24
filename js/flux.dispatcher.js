@@ -1,7 +1,7 @@
 'use strict';
 
 import { Dispatcher } from 'flux';
-import WeatherAPI from './weatherAPI';
+import { WeatherAPI } from './weatherAPI';
 
 class DispatcherClass extends Dispatcher {
   handleViewAction(action) {
@@ -32,9 +32,9 @@ const Actions = {
     this.weatherAPI.askForPermissionAndGetCoords();
   },
 
-  forecastFetched(response) {
+  forecastFetched(response, condition) {
     AppDispatcher.handleServerAction({
-      actionType: 'FORECAST_FETCHED', response
+      actionType: 'FORECAST_FETCHED', response, condition
     });
   },
 

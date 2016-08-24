@@ -8,6 +8,32 @@ const GEOLOCATION_ERROR_CODES = [
   'unknown error', 'permission denied', 'position unavailable', 'timed out'
 ];
 
+const WeatherConditions = {
+  list: {
+    thunderstorm: [200, 232],
+    drizzle: [300, 321],
+    rain: [500, 531],
+    snow: [600, 622],
+    mist: [700, 790],
+    clear: [800, 800],
+    clouds: [801, 804],
+    extreme: [900, 906]
+  },
+  between: function between(x, min, max) {
+    return x >= min && x <= max;
+  },
+  getCondition: function(id) {
+    var condition = 'default';
+    Object.keys(this.list).map(key => {
+      let range = this.list[key];
+      if (this.between(id, range[0], range[1])) {
+        condition = key;
+      }
+    });
+    return condition;
+  }
+};
+
 class WeatherAPI {
   constructor(dispatcher) {
     var location = localStorage.getItem('location');
@@ -23,7 +49,6 @@ class WeatherAPI {
   fetchForecast(location) {
     if (typeof location === 'object' && location.coords) {
       location = location.coords;
-      console.log(this.parseResponse);
       fetch(`${CONFIG.url}&lat=${location.latitude}&lon=${location.longitude}`)
         .then(this.parseResponse.bind(this))
         .catch(this.fetchError.bind(this));
@@ -42,10 +67,11 @@ class WeatherAPI {
   parseResponse(response) {
     if (response.status === 200) {
       response.json().then(data => {
-        console.log(data.cod);
         if (data.cod == "200") {
           localStorage.setItem('location', data.name);
-          this.dispatcher.forecastFetched(data);
+          this.dispatcher.forecastFetched(
+            data, WeatherConditions.getCondition(data.weather[0].id)
+          );
         } else {
           this.fetchError(data.message);
         }
@@ -63,4 +89,4 @@ class WeatherAPI {
   }
 }
 
-export default WeatherAPI;
+export { WeatherAPI, WeatherConditions };

@@ -1,16 +1,16 @@
 'use strict';
 
 import { Actions } from '../flux.dispatcher';
-import AppStore from '../flux.store';
+import { AppStore, Weather } from '../flux.store';
+
+import Widget from './widget';
+import Form from './form';
 
 const App = React.createClass({
   displayName: 'Application',
 
   getInitialState() {
-    return {
-      loading: true,
-      value: ''
-    };
+    return Weather;
   },
 
   componentWillMount() {
@@ -26,10 +26,6 @@ const App = React.createClass({
     this.setState(AppStore.getForecast());
   },
 
-  setValue(e) {
-    Actions.setValue(e.target.value);
-  },
-
   fetchByLocation() {
     this.setState({ loading: true });
     Actions.fetchByLocation(this.state.value);
@@ -41,14 +37,19 @@ const App = React.createClass({
   },
 
   render() {
-    console.log(this.state);
     return (
-      <div>
-        {this.state.loading && <div>LOADING</div>}
-        {this.state.error && <div>ERROR: {this.state.error}</div>}
-        <input disabled={this.state.loading} value={this.state.value} onChange={this.setValue}/>
-        <button disabled={this.state.loading} onClick={this.fetchByLocation}>Fetch</button>
-        <button disabled={this.state.loading} onClick={this.fetchByUserAgent}>Auto</button>
+      <div className={`container ${this.state.loading && 'loading'}`}>
+        <div className="inner-block">
+          <Widget forecast={this.state.forecast} />
+          <Form
+            actions={Actions}
+            value={this.state.value}
+            error={this.state.error}
+            loading={this.state.loading}
+            parent={this}
+            ref="input"
+          />
+        </div>
       </div>
     );
   }
