@@ -8,7 +8,8 @@ const App = React.createClass({
 
   getInitialState() {
     return {
-      loading: true
+      loading: true,
+      value: ''
     };
   },
 
@@ -22,14 +23,32 @@ const App = React.createClass({
   },
 
   _onChange() {
-    console.log('changed');
-    this.setState(this.getInitialState());
+    this.setState(AppStore.getForecast());
+  },
+
+  setValue(e) {
+    Actions.setValue(e.target.value);
+  },
+
+  fetchByLocation() {
+    this.setState({ loading: true });
+    Actions.fetchByLocation(this.state.value);
+  },
+
+  fetchByUserAgent() {
+    this.setState({ loading: true });
+    Actions.askForPermissionAndGetCoords();
   },
 
   render() {
+    console.log(this.state);
     return (
       <div>
-        <button onClick={() => Actions.increase()}>test {this.state.count}</button>
+        {this.state.loading && <div>LOADING</div>}
+        {this.state.error && <div>ERROR: {this.state.error}</div>}
+        <input disabled={this.state.loading} value={this.state.value} onChange={this.setValue}/>
+        <button disabled={this.state.loading} onClick={this.fetchByLocation}>Fetch</button>
+        <button disabled={this.state.loading} onClick={this.fetchByUserAgent}>Auto</button>
       </div>
     );
   }

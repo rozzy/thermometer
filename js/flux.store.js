@@ -5,6 +5,10 @@ import { EventEmitter } from 'events';
 
 const CHANGE_EVENT = 'change';
 
+const Weather = {
+  forecast: null
+}
+
 class Store extends EventEmitter {
   constructor() {
     super();
@@ -13,10 +17,22 @@ class Store extends EventEmitter {
 
   registerStore() {
     return Dispatcher.register(function({ action }) {
-      console.log(action);
+      console.log('•', action);
       switch(action.actionType) {
-        case 'INCREASE':
-          // count += 1 ;
+        case 'FORECAST_FETCHED':
+          Weather.forecast = action.response
+          Weather.value = action.response.name;
+          Weather.error = false;
+          Weather.loading = false;
+          break;
+
+        case 'CITY_ERROR':
+          Weather.error = action.error;
+          Weather.loading = false;
+          break;
+
+        case 'SET_VALUE':
+          Weather.value = action.value;
       }
 
       AppStore.emitChange();
@@ -34,6 +50,10 @@ class Store extends EventEmitter {
 
   removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback);
+  }
+
+  getForecast() {
+    return Weather;
   }
 };
 

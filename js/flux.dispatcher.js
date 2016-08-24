@@ -24,17 +24,32 @@ const Actions = {
     this.weatherAPI = new WeatherAPI(this);
   },
 
+  fetchByLocation(location) {
+    this.weatherAPI.fetchForecast(location);
+  },
+
+  askForPermissionAndGetCoords() {
+    this.weatherAPI.askForPermissionAndGetCoords();
+  },
+
   forecastFetched(response) {
     AppDispatcher.handleServerAction({
       actionType: 'FORECAST_FETCHED', response
-    })
+    });
   },
 
-  fetchError() {
+  fetchError(error) {
     AppDispatcher.handleServerAction({
-      actionType: 'CITY_ERROR'
+      actionType: 'CITY_ERROR', error
     });
-  }
+  },
+
+  setValue(value) {
+    AppDispatcher.handleViewAction({
+      actionType: 'SET_VALUE', value
+    });
+  },
+
 }
 
 export { Actions, AppDispatcher as Dispatcher };
